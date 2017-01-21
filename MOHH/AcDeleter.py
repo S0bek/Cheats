@@ -1,5 +1,7 @@
 #!/usr/bin/python
-#Program to delete a user account on MOHH on PSP (with NitePr program and with US version of MOHH only)
+#Program to delete a user account on MOHH on PSP (with NitePr program and with US version only)
+
+#Next Step: add options to increase program efficiency! :)
 
 '''Functions'''
 
@@ -22,60 +24,57 @@ def hexdump(letters):
 
     return "0x" + hexrepr.upper()
 
+loop = 0
 def generate_hex(name):
+    global loop
     length = len(name)
-    dump = ""
     line1 = "0x01217DD8"
     line2 = "0x01217DDC"
     line3 = "0x01217DE0"
-    line4 = "0x01217DE4"
-    line5 = "0x01217DE8"
-    line6 = "" '''Same logic'''
+    dump = ""
 
-    if length < 24:
+    if length > 12:
+        print("The size of the name cannot exceed 12 characters!")
+        exit(1)
 
-        if length <= 4:
-            if length < 4:
-                for i in range(length , 4):
-                    '''Try this to convert null characters into null hexa:
-                    name += str(hex(0)[2:])
-                    '''
-                    name += " "
+    if length <= 4:
+        if length < 4:
+            for i in range(length , 4):
+                '''Essayer de cette maniere:
+                name += str(hex(0)[2:])
+                '''
+                name += " "
 
-            dump = str(hexdump(name))
+        if loop > 0:
+            dump = str(" " + hexdump(name) + "\n")
+        else:
+            dump = line1 + str(" " + hexdump(name) + "\n")
 
-        elif length > 4 and length <= 8:
+    elif length > 4:
+        loop += 1
+
+        if length > 4 and length <= 8:
             if length <= 8:
                 for i in range(length , 8):
                     name += " "
 
-            line1 += str(" " + hexdump(name[0:4]))
-            line2 += str(" " + hexdump(name[4:]))
-            dump = "%s\n%s\n" % (line1 , line2)
+            dump = line1 + generate_hex(name[0:4])
+            dump += line2 + generate_hex(name[4:8])
 
         elif length > 8 and length <= 12:
             if length <= 12:
                 for i in range(length , 12):
                     name += " "
 
-            line1 += str(" " + hexdump(name[0:4]))
-            line2 += str(" " + hexdump(name[4:8]))
-            line3 += str(" " + hexdump(name[8:]))
-            dump = "%s\n%s\n%s\n" % (line1 , line2 , line3)
+            dump = line1 + generate_hex(name[0:4])
+            dump += line2 + generate_hex(name[4:8])
+            dump += line3 + generate_hex(name[8:])
 
-        #Next lines code here
-        ''''''
-
-        #dump = dump.upper()
-        return dump
-
-    else:
-        return
+    return dump
 
 '''Main code'''
 
 name = raw_input("Name of the account to delete: ")
-#name = name.upper()
 
 #We convert the name to an hex dump
 dump = generate_hex(name)
@@ -87,6 +86,6 @@ with open("ULES-00558.txt" , "w") as file:
     file.write("#Cheat code to delete %s\n" % name)
     file.write(dump)
 
-#file.closed
-
+if not file.closed:
+    file.close()
 
