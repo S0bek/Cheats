@@ -13,8 +13,6 @@ def reverse(string):
 
     return rev
 
-print(str(reverse("Je suis un test")))
-
 def hexdump(letters):
     hexrepr = ''
     rev = reverse(letters)
