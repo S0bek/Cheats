@@ -5,13 +5,13 @@
 
 def reverse(string):
     rev = ""
-    length = len(string) - 1
 
-    while length >= 0:
-        rev += string[length]
-        length -= 1
+    for i in range(len(string) -1, -1, -1):
+        rev += str(string[i])
 
     return rev
+
+print(str(reverse("Je suis un test")))
 
 def hexdump(letters):
     hexrepr = ''
